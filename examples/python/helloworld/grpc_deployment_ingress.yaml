@@ -1,0 +1,11 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: test-grpc-tcp-ingress
+spec:
+  rules:
+  - host: test-grpc-2.apollo2.dmz.sslmda.net
+    tcp:
+      backend:
+        serviceName: test-grpc-tcp
+        servicePort: 50051

@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-grpc
+  labels:
+    app: test-grpc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-grpc
+  template:
+    metadata:
+      labels:
+        app: test-grpc
+    spec:
+      containers:
+        - name: test-grpc
+          image: grpc/python:1.4
+          workingDir: /usr/src
+          command: ["/bin/sh", "-c"]
+          args: ["git clone -b v1.6.x https://github.com/grpc/grpc && cd grpc/examples/python/helloworld && /bin/echo $PWD && python3 greeter_server.py"]
+          ports:
+            - containerPort: 50051
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-grpc-tcp
+spec:
+  type: NodePort
+  externalTrafficPolicy: Cluster
+  selector:
+    app: test-grpc
+  ports:
+    - protocol: TCP
+      port: 50051
